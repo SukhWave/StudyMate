@@ -32,6 +32,17 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     // Hash the password
     $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
 
+    // Check if email already exists
+    $checkStmt = $conn->prepare("SELECT id FROM users WHERE email = ?");
+    $checkStmt->bind_param("s", $email);
+    $checkStmt->execute();
+    $checkStmt->store_result();
+
+if ($checkStmt->num_rows > 0) {
+    die("This email is already registered. Please use a different email.");
+}
+$checkStmt->close();
+
     // Prepare the SQL statement to insert the new user
     $stmt = $conn->prepare("INSERT INTO users (name, email, password, role_id) VALUES (?, ?, ?, ?)");
     if (!$stmt) {
