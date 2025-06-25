@@ -16,7 +16,7 @@ include 'database.php';
     $result = $conn->query("SELECT id, grade_level FROM grades ORDER BY grade_level");
     if ($result->num_rows > 0):
     ?>
-    <form action="topics.php" method="get">
+    <form action="subjects.php" method="get">
         <label for="grade">Select Grade:</label>
         <select name="grade_id" id="grade" required>
             <option value="">--Choose Grade--</option>
