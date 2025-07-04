@@ -1,8 +1,11 @@
 <?php
 session_start();
+if (!isset($_SESSION['user_id'])) {
+    header("Location: login.php");
+    exit();
+}
 include 'header.php';
 include 'database.php';
-
 ?>
 
 <h1>Welcome to StudyMate</h1>
@@ -12,7 +15,6 @@ include 'database.php';
     <p>Welcome back! Select your grade to start studying:</p>
 
     <?php
-    // Fetch grades from DB
     $result = $conn->query("SELECT id, grade_level FROM grades ORDER BY grade_level");
     if ($result->num_rows > 0):
     ?>

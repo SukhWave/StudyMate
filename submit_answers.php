@@ -1,6 +1,6 @@
 <?php
 session_start();
-include 'database.php'; // contains $conn
+include 'database.php'; 
 
 if (!isset($_SESSION['user_id'])) {
     header('Location: login.php');
@@ -10,7 +10,7 @@ if (!isset($_SESSION['user_id'])) {
 $user_id = $_SESSION['user_id'];
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    header('Location: dashboard.php'); // Or wherever you want
+    header('Location: dashboard.php'); 
     exit;
 }
 
@@ -22,14 +22,12 @@ if (!$topic_id || empty($answers)) {
     exit;
 }
 
-// Fetch correct answers for the questions submitted
 $question_ids = array_keys($answers);
 $placeholders = implode(',', array_fill(0, count($question_ids), '?'));
 
 $sql = "SELECT id, correct_answer FROM questions WHERE id IN ($placeholders)";
 $stmt = $conn->prepare($sql);
 
-// Bind question IDs dynamically
 $types = str_repeat('i', count($question_ids));
 $stmt->bind_param($types, ...$question_ids);
 $stmt->execute();
@@ -42,7 +40,6 @@ while ($row = $result->fetch_assoc()) {
 
 $stmt->close();
 
-// Calculate correct and total attempts
 $total_attempts = count($answers);
 $correct_count = 0;
 
@@ -50,21 +47,18 @@ foreach ($answers as $qid => $user_answer) {
     $qid = intval($qid);
     $correct_answer = $correct_answers[$qid] ?? null;
     if ($correct_answer !== null) {
-        // Simple case-insensitive comparison, trim spaces
         if (strcasecmp(trim($user_answer), trim($correct_answer)) === 0) {
             $correct_count++;
         }
     }
 }
 
-// Check if an entry for this user and topic already exists in progress
 $stmt = $conn->prepare("SELECT id, correct_answers, total_attempts FROM progress WHERE user_id = ? AND topic_id = ?");
 $stmt->bind_param("ii", $user_id, $topic_id);
 $stmt->execute();
 $stmt->store_result();
 
 if ($stmt->num_rows > 0) {
-    // Update existing record
     $stmt->bind_result($progress_id, $existing_correct, $existing_attempts);
     $stmt->fetch();
 
@@ -79,7 +73,6 @@ if ($stmt->num_rows > 0) {
     $update_stmt->close();
 
 } else {
-    // Insert new record
     $stmt->close();
 
     $insert_stmt = $conn->prepare("INSERT INTO progress (user_id, topic_id, correct_answers, total_attempts) VALUES (?, ?, ?, ?)");
@@ -88,7 +81,6 @@ if ($stmt->num_rows > 0) {
     $insert_stmt->close();
 }
 
-// Show summary to user
 $score_percentage = round(($correct_count / $total_attempts) * 100, 2);
 
 ?>

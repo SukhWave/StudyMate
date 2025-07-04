@@ -1,8 +1,7 @@
 <?php
 session_start();
-include 'database.php'; // contains $conn
+include 'database.php'; 
 
-// Check user logged in
 if (!isset($_SESSION['user_id'])) {
     header('Location: login.php');
     exit;
@@ -16,7 +15,6 @@ if (!$topic_id) {
     exit;
 }
 
-// Fetch topic name (optional)
 $stmt = $conn->prepare("SELECT topic_name FROM topics WHERE id = ?");
 $stmt->bind_param("i", $topic_id);
 $stmt->execute();
@@ -29,7 +27,6 @@ if (!$topic_name) {
     exit;
 }
 
-// Fetch questions for this topic
 $stmt = $conn->prepare("SELECT id, question_text, question_type, choices FROM questions WHERE topic_id = ?");
 $stmt->bind_param("i", $topic_id);
 $stmt->execute();

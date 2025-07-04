@@ -1,9 +1,5 @@
 <?php
-ini_set('display_errors', '1');
-ini_set('display_startup_errors', '1');
-error_reporting(E_ALL);
-session_start();
-require_once('database.php');
+require_once('database.php'); // gives you $conn
 
 if (!isset($_SESSION['user_id'])) {
     header("Location: login.php");
@@ -12,7 +8,6 @@ if (!isset($_SESSION['user_id'])) {
 
 $user_id = $_SESSION['user_id'];
 
-// Fetch progress data
 $query = "
     SELECT s.subject_name, t.topic_name, 
            p.correct_answers, p.total_attempts,
@@ -20,12 +15,15 @@ $query = "
     FROM progress p
     JOIN topics t ON p.topic_id = t.id
     JOIN subjects s ON t.subject_id = s.id
-    WHERE p.user_id = :user_id
+    WHERE p.user_id = ?
     ORDER BY s.subject_name, t.topic_name
 ";
-$stmt = $db->prepare($query);
-$stmt->execute([':user_id' => $user_id]);
-$progress = $stmt->fetchAll();
+
+$stmt = $conn->prepare($query);
+$stmt->bind_param("i", $user_id);
+$stmt->execute();
+$result = $stmt->get_result();
+$progress = $result->fetch_all(MYSQLI_ASSOC);
 ?>
 
 <!DOCTYPE html>
