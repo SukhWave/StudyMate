@@ -29,7 +29,6 @@ $placeholders = implode(',', array_fill(0, count($question_ids), '?'));
 
 $sql = "SELECT id, correct_answer FROM questions WHERE id IN ($placeholders)";
 $stmt = $conn->prepare($sql);
-
 $types = str_repeat('i', count($question_ids));
 $stmt->bind_param($types, ...$question_ids);
 $stmt->execute();
@@ -47,10 +46,8 @@ $correct_count = 0;
 foreach ($answers as $qid => $user_answer) {
     $qid = intval($qid);
     $correct_answer = $correct_answers[$qid] ?? null;
-    if ($correct_answer !== null) {
-        if (strcasecmp(trim($user_answer), trim($correct_answer)) === 0) {
-            $correct_count++;
-        }
+    if ($correct_answer !== null && strcasecmp(trim($user_answer), trim($correct_answer)) === 0) {
+        $correct_count++;
     }
 }
 
@@ -80,7 +77,47 @@ if ($stmt->num_rows > 0) {
     $insert_stmt->close();
 }
 
+// === BADGE AWARDING LOGIC STARTS HERE ===
+
 $score_percentage = round(($correct_count / $total_attempts) * 100, 2);
+
+// Helper function to check if badge is already earned
+function has_badge($conn, $user_id, $badge_name) {
+    $stmt = $conn->prepare("SELECT 1 FROM user_badges WHERE user_id = ? AND badge_name = ?");
+    $stmt->bind_param("is", $user_id, $badge_name);
+    $stmt->execute();
+    $stmt->store_result();
+    $has_it = $stmt->num_rows > 0;
+    $stmt->close();
+    return $has_it;
+}
+
+// Award "Beginner" Badge for first submission ever
+$stmt = $conn->prepare("SELECT COUNT(*) FROM progress WHERE user_id = ?");
+$stmt->bind_param("i", $user_id);
+$stmt->execute();
+$stmt->bind_result($total_progress_entries);
+$stmt->fetch();
+$stmt->close();
+
+if ($total_progress_entries === 1 && !has_badge($conn, $user_id, "Beginner")) {
+    $stmt = $conn->prepare("INSERT INTO user_badges (user_id, badge_name) VALUES (?, 'Beginner')");
+    $stmt->bind_param("i", $user_id);
+    $stmt->execute();
+    $stmt->close();
+    $_SESSION['new_badge'] = "Beginner";
+}
+
+// Award "Star Performer" badge for score >= 90%
+if ($score_percentage >= 90 && !has_badge($conn, $user_id, "Star Performer")) {
+    $stmt = $conn->prepare("INSERT INTO user_badges (user_id, badge_name) VALUES (?, 'Star Performer')");
+    $stmt->bind_param("i", $user_id);
+    $stmt->execute();
+    $stmt->close();
+    $_SESSION['new_badge'] = "Star Performer";
+}
+
+// === BADGE AWARDING LOGIC ENDS ===
 ?>
 
 <div style="max-width: 700px; margin: 0 auto; text-align: center; padding: 30px; background-color: #fff; border-radius: 10px; box-shadow: 0 0 5px rgba(0,0,0,0.1);">
