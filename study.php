@@ -20,8 +20,8 @@ if (!$topic_id) {
 }
 
 // Get topic name
-$stmt = $conn->prepare("SELECT topic_name FROM topics WHERE id = ?");
-$stmt->bind_param("i", $topic_id);
+$stmt = $conn->prepare("SELECT topic_name FROM topics WHERE id = ? AND subject_id = ?");
+$stmt->bind_param("ii", $topic_id, $subject_id);
 $stmt->execute();
 $stmt->bind_result($topic_name);
 $stmt->fetch();
@@ -35,19 +35,20 @@ if (!$topic_name) {
 
 echo "<h2 style='text-align:center;'>Topic: " . htmlspecialchars($topic_name) . "</h2>";
 
-// Try to get passage (if any) for this topic and grade
+// Try to get passage (if any) for this topic and grade (subject filter included)
 $passage_stmt = $conn->prepare("
-    SELECT id, passage_text 
-    FROM passages 
-    WHERE topic_id = ? AND grade_level = ? 
+    SELECT p.id, p.passage_text 
+    FROM passages p
+    INNER JOIN topics t ON p.topic_id = t.id
+    WHERE p.topic_id = ? AND p.grade_level = ? AND t.subject_id = ?
     ORDER BY RAND() LIMIT 1
 ");
-$passage_stmt->bind_param("ii", $topic_id, $grade_id);
+$passage_stmt->bind_param("iii", $topic_id, $grade_id, $subject_id);
 $passage_stmt->execute();
 $passage_result = $passage_stmt->get_result();
 
 if ($passage_result->num_rows > 0) {
-    // Passage exists - show passage + questions linked to passage
+    // Passage exists
     $passage = $passage_result->fetch_assoc();
     $passage_id = $passage['id'];
     $passage_text = $passage['passage_text'];
@@ -56,24 +57,28 @@ if ($passage_result->num_rows > 0) {
     echo "<p style='font-size: 18px; line-height: 1.5;'>" . nl2br(htmlspecialchars($passage_text)) . "</p>";
     echo "</div>";
 
+    // Get passage questions (with subject filter)
     $question_stmt = $conn->prepare("
-        SELECT id, question_text, question_type, choices 
-        FROM questions 
-        WHERE passage_id = ? 
+        SELECT q.id, q.question_text, q.question_type, q.choices 
+        FROM questions q
+        INNER JOIN passages p ON q.passage_id = p.id
+        INNER JOIN topics t ON p.topic_id = t.id
+        WHERE q.passage_id = ? AND t.subject_id = ?
         ORDER BY RAND() 
         LIMIT 10
     ");
-    $question_stmt->bind_param("i", $passage_id);
+    $question_stmt->bind_param("ii", $passage_id, $subject_id);
 } else {
-    // No passage - show questions linked directly to topic
+    // No passage — get topic questions (with subject filter)
     $question_stmt = $conn->prepare("
-        SELECT id, question_text, question_type, choices 
-        FROM questions 
-        WHERE topic_id = ? 
+        SELECT q.id, q.question_text, q.question_type, q.choices 
+        FROM questions q
+        INNER JOIN topics t ON q.topic_id = t.id
+        WHERE q.topic_id = ? AND t.subject_id = ?
         ORDER BY RAND() 
         LIMIT 10
     ");
-    $question_stmt->bind_param("i", $topic_id);
+    $question_stmt->bind_param("ii", $topic_id, $subject_id);
 }
 
 $question_stmt->execute();
@@ -81,7 +86,6 @@ $question_result = $question_stmt->get_result();
 
 if ($question_result->num_rows > 0):
 ?>
-
 <form method="post" action="submit_answers.php" style="max-width: 700px; margin: 20px auto;">
     <?php
     $qIndex = 1;

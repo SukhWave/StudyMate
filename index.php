@@ -8,36 +8,38 @@ include 'header.php';
 include 'database.php';
 ?>
 
-<h1>Welcome to StudyMate</h1>
-<p>Your free interactive learning app for Grades 1–8.</p>
+<div class="welcome-section">
+    <h1>🎉 Welcome to <span class="brand">StudyMate</span>!</h1>
+    <p class="tagline">"Learning is your superpower!" 🌟</p>
+</div>
 
-<?php if (isset($_SESSION['user_id'])): ?>
-    <p>Welcome back! Select your grade to start studying:</p>
+<div class="user-card">
+    <img src="assets/images/bagpack.png" alt="User Avatar" class="avatar">
+    <h2>📚 Choose Your Grade</h2>
+    <div class="grade-buttons">
+        <?php
+        $result = $conn->query("SELECT id, grade_level FROM grades ORDER BY grade_level");
+        while ($row = $result->fetch_assoc()):
+        ?>
+            <a href="subjects.php?grade_id=<?= $row['id'] ?>" class="grade-btn">Grade <?= $row['grade_level'] ?></a>
+        <?php endwhile; ?>
+    </div>
+</div>
 
-    <?php
-    $result = $conn->query("SELECT id, grade_level FROM grades ORDER BY grade_level");
-    if ($result->num_rows > 0):
-    ?>
-    <form action="subjects.php" method="get">
-        <label for="grade">Select Grade:</label>
-        <select name="grade_id" id="grade" required>
-            <option value="">--Choose Grade--</option>
-            <?php while ($row = $result->fetch_assoc()): ?>
-                <option value="<?= $row['id'] ?>">Grade <?= $row['grade_level'] ?></option>
-            <?php endwhile; ?>
-        </select>
-        <button type="submit">Next</button>
-    </form>
-    <?php else: ?>
-        <p>No grades found in database.</p>
-    <?php endif; ?>
+<div class="links-section">
+    <a href="dashboard.php" class="dashboard-link">📊 Progress Dashboard</a>
+    <a href="logout.php" class="logout-link">🚪 Logout</a>
+</div>
 
-    <p><a href="dashboard.php">📊 Progress Dashboard</a></p>
-    <p><a href="logout.php">Logout</a></p>
+<div class="challenge-card">
+    <h3>🎯 Daily Challenge</h3>
+    <p>Answer 5 math questions to earn <strong>50 XP</strong>!</p>
+    <a href="challenge.php" class="start-btn">Start Now</a>
+</div>
 
-<?php else: ?>
-    <p>Please <a href="register.php">Register</a> or <a href="login.php">Login</a> to get started.</p>
-<?php endif; ?>
+<div class="funfact-card">
+    <h3>🌟 Fun Fact</h3>
+    <p>Did you know? A group of flamingos is called a <strong>"flamboyance"</strong>!</p>
+</div>
 
 <?php include 'footer.php'; ?>
-

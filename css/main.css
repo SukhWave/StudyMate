@@ -1,15 +1,33 @@
+/* General body and main */
 body {
-    font-family: Arial, sans-serif;
+    background-image: url('../assets/images/stationery-arranged-creative-way.png');
+    background-size: cover;          
+    background-repeat: no-repeat;    
+    background-position: center;     
+    background-attachment: fixed;    
+    font-family: 'Comic Sans MS', cursive, sans-serif;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
     margin: 0;
-    padding: 0;
-    background: #93d0a5;
-    color: #222; 
+}
+
+body::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.6); 
+    z-index: -1;
 }
 
 header {
-    background: rgb(22, 97, 38);
+    background: #1e7b34; /* darker green for header */
     color: white;
-    padding: 10px 20px;
+    padding: 12px 20px;
+    font-size: 1.2em;
 }
 
 nav a {
@@ -25,20 +43,215 @@ nav a:hover {
 
 main {
     padding: 20px;
-    max-width: 900px;
-    margin: 0 auto; /* center content */
-    background: white;
-    box-shadow: 0 0 8px rgba(0,0,0,0.1);
-    border-radius: 8px;
+    max-width: 1000px;
+    margin: 20px auto;
+    flex: 1;
 }
 
+/* Welcome Section */
+.welcome-section {
+    text-align: center;
+    padding: 25px;
+    background: #fff3e0;
+    border-radius: 20px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+    position: relative;
+}
+
+.welcome-section h1 {
+    font-size: 2.8em;
+    color: #ff5722; 
+    margin-bottom: 10px;
+}
+
+.welcome-section .tagline {
+    font-size: 1.4em;
+    color: #555;
+}
+
+/* User Card */
+.user-card {
+    background: #e1f5fe;
+    padding: 25px;
+    margin: 25px auto;
+    text-align: center;
+    border-radius: 20px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+    max-width: 700px;
+    position: relative;
+}
+
+.user-card::before {
+    content: "📚";
+    position: absolute;
+    font-size: 3em;
+    top: -20px;
+    left: 20px;
+}
+
+.user-card .avatar {
+    width: 80px;
+    border-radius: 50%;
+    margin-bottom: 15px;
+}
+
+/* Grade buttons */
+.grade-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 12px;
+    margin-top: 15px;
+}
+
+.grade-btn {
+    display: inline-block;
+    background: #ff9800;
+    color: white;
+    padding: 14px 25px;
+    border-radius: 12px;
+    font-size: 1.1em;
+    text-decoration: none;
+    font-weight: bold;
+    transition: all 0.3s ease;
+}
+
+.grade-btn:hover {
+    background: #fb8c00;
+    transform: scale(1.1);
+}
+
+/* Links Section */
+.links-section {
+    text-align: center;
+    margin: 25px 0;
+}
+
+.links-section a {
+    margin: 0 15px;
+    text-decoration: none;
+    font-size: 1.2em;
+    color: #1b5e20;
+    font-weight: bold;
+}
+
+.links-section a:hover {
+    text-decoration: underline;
+}
+
+/* Challenge Card */
+.challenge-card {
+    background: #fff9c4;
+    padding: 25px;
+    margin: 25px auto;
+    text-align: center;
+    border-radius: 20px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+    max-width: 700px;
+    position: relative;
+}
+
+.challenge-card::before {
+    content: "🎯";
+    position: absolute;
+    font-size: 3em;
+    top: -20px;
+    left: 20px;
+}
+
+.challenge-card .start-btn {
+    display: inline-block;
+    margin-top: 15px;
+    padding: 14px 28px;
+    background: #f44336;
+    color: white;
+    border-radius: 12px;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 1.1em;
+    transition: all 0.3s ease;
+}
+
+.challenge-card .start-btn:hover {
+    background: #e53935;
+    transform: scale(1.05);
+}
+
+/* Question Box */
+.question-box {
+    background: #c8e6c9;
+    padding: 20px;
+    margin: 20px auto;
+    border-radius: 15px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.15);
+    max-width: 700px;
+    text-align: left;
+    position: relative;
+}
+
+input[type="text"] {
+    width: 100%;
+    padding: 14px 12px;
+    margin-top: 10px;
+    margin-bottom: 15px;
+    border-radius: 10px;
+    border: 2px solid #4caf50;
+    font-size: 1.1em;
+    box-sizing: border-box;
+}
+
+label {
+    display: block;
+    background: #b2dfdb;
+    padding: 10px 12px;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    cursor: pointer;
+    font-size: 1.1em;
+    transition: background 0.3s ease;
+}
+
+label:hover {
+    background: #80cbc4;
+}
+
+input[type="radio"] {
+    margin-right: 10px;
+}
+
+/* Fun Fact Card */
+.funfact-card {
+    background: #ffecb3;
+    padding: 20px;
+    margin: 20px auto;
+    text-align: center;
+    border-radius: 15px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    max-width: 700px;
+    position: relative;
+}
+
+.funfact-card::before {
+    content: "🌟";
+    position: absolute;
+    font-size: 2.5em;
+    top: -10px;
+    left: 20px;
+}
+
+.funfact-card p {
+    font-size: 1.1em;
+}
+
+/* Footer */
 footer {
-    background-color: #4CAF50;
+    background-color: #1b5e20;
     color: white;
     text-align: center;
     padding: 15px;
-    margin-top: 40px;
-    position: relative;
-    bottom: 0;
+    margin-top: 20px;
     width: 100%;
+    box-sizing: border-box;
+    font-size: 1em;
+    border-top: 4px solid #81c784;
 }
