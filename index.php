@@ -39,7 +39,24 @@ include 'database.php';
 
 <div class="funfact-card">
     <h3>🌟 Fun Fact</h3>
-    <p>Did you know? A group of flamingos is called a <strong>"flamboyance"</strong>!</p>
+    <?php
+    // Array of fun facts
+    $funFacts = [
+        "Did you know? A group of flamingos is called a flamboyance!",
+        "Octopuses have three hearts ❤️.",
+        "Bananas are berries, but strawberries aren’t 🍓.",
+        "Sharks existed before trees 🌊.",
+        "Your stomach gets a new lining every 3–4 days!",
+        "Sloths can hold their breath longer than dolphins 🦥.",
+        "Honey never spoils 🍯.",
+        "A day on Venus is longer than a year on Venus 🌌."
+    ];
+
+    // Pick a random fun fact
+    $randomFact = $funFacts[array_rand($funFacts)];
+
+    echo "<p>$randomFact</p>";
+    ?>
 </div>
 
 <?php include 'footer.php'; ?>
