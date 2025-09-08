@@ -40,15 +40,20 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         <p style="color: red; text-align:center;"><?= htmlspecialchars($error) ?></p>
     <?php endif; ?>
 
-    <form method="POST" style="max-width: 400px; margin: 0 auto; background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 6px rgba(0,0,0,0.2);">
+<form method="POST" style="max-width: 400px; margin: 20px auto; display: block; background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 6px rgba(0,0,0,0.2); box-sizing: border-box;">
+
         <label style="display: block; margin-bottom: 10px;">
             Email:
-            <input type="email" name="email" required style="width: 100%; padding: 8px; margin-top: 4px;">
+        <input type="email" name="email" required 
+        style="width: 100%; padding: 8px; margin-top: 4px; box-sizing: border-box;">
+
         </label>
 
         <label style="display: block; margin-bottom: 20px;">
             Password:
-            <input type="password" name="password" required style="width: 100%; padding: 8px; margin-top: 4px;">
+        <input type="password" name="password" required 
+        style="width: 100%; padding: 8px; margin-top: 4px; box-sizing: border-box;">
+
         </label>
 
         <button type="submit" style="width: 100%; padding: 10px; background: #166126; color: white; border: none; border-radius: 4px; font-weight: bold; cursor: pointer;">
