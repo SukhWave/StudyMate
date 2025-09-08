@@ -23,25 +23,26 @@ $stmt->execute();
 $result = $stmt->get_result();
 ?>
 
-<h2 style="text-align:center;">Select a Topic</h2>
+<h2 style="text-align:center; font-size: 2em; margin-top: 30px;">Select a Topic</h2>
 
 <?php if ($result->num_rows > 0): ?>
-    <ul style="max-width: 500px; margin: 20px auto; padding-left: 0;">
+    <ul style="max-width: 600px; margin: 30px auto; padding-left: 0;">
         <?php while ($row = $result->fetch_assoc()): ?>
-            <li style="list-style: none; margin-bottom: 10px;">
+            <li style="list-style: none; margin-bottom: 15px;">
                 <a href="study.php?topic_id=<?= $row['id'] ?>&grade_id=<?= $grade_id ?>&subject_id=<?= $subject_id ?>"
-                   style="display: block; padding: 10px 15px; background-color: #4CAF50; color: white; text-decoration: none; border-radius: 4px; text-align: center;">
+                   style="display: block; padding: 15px 20px; background-color: #4CAF50; color: white; text-decoration: none; border-radius: 6px; text-align: center; font-size: 1.1em; transition: background 0.3s;">
                     <?= htmlspecialchars($row['topic_name']) ?>
                 </a>
             </li>
         <?php endwhile; ?>
     </ul>
 <?php else: ?>
-    <p style="text-align:center;">No topics available for this grade and subject.</p>
+    <p style="text-align:center; font-size: 1.2em; margin-top: 20px;">No topics available for this grade and subject.</p>
 <?php endif; ?>
 
-<p style="text-align:center;">
-    <a href="subjects.php?grade_id=<?= $grade_id ?>" style="text-decoration: none; color: #004d00;">&larr; Back to Subjects</a>
+<p style="text-align:center; margin-top: 20px;">
+    <a href="subjects.php?grade_id=<?= $grade_id ?>" 
+       style="text-decoration: none; color: #004d00; font-size: 1em;">&larr; Back to Subjects</a>
 </p>
 
 <?php include 'footer.php'; ?>
